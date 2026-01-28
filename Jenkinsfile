@@ -1,41 +1,65 @@
 pipeline {
-    agent any  // run on the same Jenkins machine
+    agent any  // Run on any available Jenkins node
 
     tools {
-        jdk 'JDK11'  // Name of JDK installed in Jenkins
-        maven 'Maven3'  // Name of Maven configured in Jenkins
+        jdk 'JDK11'      // Must match the name of JDK installed in Jenkins
+        maven 'Maven3'   // Must match the name of Maven installed in Jenkins
+    }
+
+    environment {
+        // GitHub token stored in Jenkins credentials
+        GITHUB_TOKEN = credentials('github-token')
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/username/MySeleniumProject.git'
+                echo 'Checking out the code from GitHub'
+                git branch: 'main',
+                    url: 'https://github.com/deshpande87amrita-boop/myfirstgitproject.git',
+                    credentialsId: 'github-token'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building project with Maven'
-                sh 'mvn clean compile'
+                echo 'Building the project using Maven'
+                bat 'mvn clean compile'
             }
         }
 
         stage('Run Tests') {
             steps {
                 echo 'Running Selenium TestNG tests'
-                sh 'mvn test'
+                bat 'mvn test'
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'  // Collect TestNG results
+                    echo 'Collecting Test Results'
+                    junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
 
         stage('Post-Build') {
             steps {
-                echo 'Tests Completed'
+                echo 'Build and Tests Completed'
+                echo 'You can add notifications here (email/Slack) if needed'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check logs.'
+        }
+        always {
+            echo 'Cleaning workspace'
+            cleanWs()  // Optional: clean workspace after build
         }
     }
 }
