@@ -1,26 +1,12 @@
 pipeline {
-    agent any  // Run on any available Jenkins node
+    agent any
 
     tools {
-        jdk 'JDK11'      // Must match the name of JDK installed in Jenkins
-        maven 'Maven3'   // Must match the name of Maven installed in Jenkins
-    }
-
-    environment {
-        // GitHub token stored in Jenkins credentials
-        GITHUB_TOKEN = 'github-token'
+        jdk 'JDK11'
+        maven 'Maven3'
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                echo 'Checking out the code from GitHub'
-                git branch: 'main',
-                    url: 'https://github.com/deshpande87amrita-boop/myfirstgitproject.git',
-                    credentialsId: credentials('github-token')
-            }
-        }
 
         stage('Build') {
             steps {
@@ -45,7 +31,6 @@ pipeline {
         stage('Post-Build') {
             steps {
                 echo 'Build and Tests Completed'
-                echo 'You can add notifications here (email/Slack) if needed'
             }
         }
     }
@@ -59,9 +44,7 @@ pipeline {
         }
         always {
             echo 'Cleaning workspace'
-            cleanWs()  // Optional: clean workspace after build
+            cleanWs()
         }
     }
 }
-
-
