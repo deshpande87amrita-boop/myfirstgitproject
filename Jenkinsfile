@@ -8,8 +8,12 @@ pipeline {
                 echo 'Compiling Java files...'
                 // Create bin folder if it doesn't exist
                 bat 'if not exist bin mkdir bin'
-                // Compile all Java files in src folder into bin
-                bat 'javac -d bin src\\**\\*.java'
+                // Compile all Java files recursively
+                bat '''
+                for /R src %%f in (*.java) do (
+                    javac -d bin "%%f"
+                )
+                '''
             }
         }
 
