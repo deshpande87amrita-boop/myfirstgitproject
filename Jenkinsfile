@@ -18,7 +18,7 @@ pipeline {
                 echo 'Checking out the code from GitHub'
                 git branch: 'main',
                     url: 'https://github.com/deshpande87amrita-boop/myfirstgitproject.git',
-                    credentialsId: 'github-token'
+                    credentialsId: credentials('github-token')
             }
         }
 
@@ -63,3 +63,4 @@ pipeline {
         }
     }
 }
+
