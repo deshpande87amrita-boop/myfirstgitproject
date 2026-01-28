@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         // GitHub token stored in Jenkins credentials
-        GITHUB_TOKEN = credentials('github-token')
+        GITHUB_TOKEN = 'github-token'
     }
 
     stages {
@@ -63,4 +63,5 @@ pipeline {
         }
     }
 }
+
 
