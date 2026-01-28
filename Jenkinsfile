@@ -1,35 +1,19 @@
 pipeline {
-    agent any
+    agent any  // Run on any available Jenkins node
+
+    tools {
+        jdk 'JDK11'      // Name of JDK installed in Jenkins
+        maven 'Maven3'   // Name of Maven installed in Jenkins
+    }
+
+    environment {
+        GITHUB_TOKEN = 'github-token'  // Optional, if your repo is private
+    }
 
     stages {
 
-        stage('Compile') {
+        stage('Checkout') {
             steps {
-                echo 'Compiling Java files...'
-                // Create bin folder if it doesn't exist
-                bat 'if not exist bin mkdir bin'
-                // Compile all Java files recursively
-                bat '''
-                for /R src %%f in (*.java) do (
-                    javac -d bin "%%f"
-                )
-                '''
-            }
-        }
-
-        stage('Run') {
-            steps {
-                echo 'Running Java program...'
-                // Run your main class (replace MainClass with your class name)
-                bat 'java -cp bin MainClass'
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning workspace...'
-            cleanWs()
-        }
-    }
-}
+                echo 'Checking out the code from GitHub'
+                git branch: 'main',
+                    url: 'ht
