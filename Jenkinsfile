@@ -1,49 +1,30 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JDK11'
-        maven 'Maven3'
-    }
-
     stages {
 
-        stage('Build') {
+        stage('Compile') {
             steps {
-                echo 'Building the project using Maven'
-                bat 'mvn clean compile'
+                echo 'Compiling Java files...'
+                // Create bin folder if it doesn't exist
+                bat 'if not exist bin mkdir bin'
+                // Compile all Java files in src folder into bin
+                bat 'javac -d bin src\\**\\*.java'
             }
         }
 
-        stage('Run Tests') {
+        stage('Run') {
             steps {
-                echo 'Running Selenium TestNG tests'
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    echo 'Collecting Test Results'
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('Post-Build') {
-            steps {
-                echo 'Build and Tests Completed'
+                echo 'Running Java program...'
+                // Run your main class (replace MainClass with your class name)
+                bat 'java -cp bin MainClass'
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed. Please check logs.'
-        }
         always {
-            echo 'Cleaning workspace'
+            echo 'Cleaning workspace...'
             cleanWs()
         }
     }
